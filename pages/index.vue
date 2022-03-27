@@ -97,7 +97,7 @@ body,html
         border: none 
         color: #08d19c
         font-weight: 600px
-        font-size: 20px
+        font-size: 1em
       input
         line-height: 20px
         padding: 0px 8px
@@ -106,8 +106,8 @@ body,html
         &:focus
           outline: none
         &::placeholder
-          color: red
-          font-size: 1.2em
+          color: ligthen(#08d19c,.5)
+          font-size: .8em
 
       button
         cursor: pointer
