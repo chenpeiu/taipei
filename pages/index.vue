@@ -32,7 +32,17 @@
           .place {{i.City}}&nbsp;/&nbsp;{{i.Town}}
           .tel TEL:&nbsp;{{i.Tel}}
           p {{i.Introduction.substring(0,100)}}
-        button more
+
+        label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail") more
+        .about
+          .detailbox(v-if="i.isOpenDetail")
+            //- button(v-on:click="closed()") X
+            button(v-on:click="i.isOpenDetail=!i.isOpenDetail") X
+            p {{i.Introduction}}    
+    
+
+
+
 </template>
 
 
@@ -101,19 +111,6 @@ body,html
         color: #08d19c
         font-weight: 600px
         font-size: 1em
-      input
-        line-height: 20px
-        padding: 0px 8px
-        width: 150px
-        // box-sizing: border-box
-        &:focus
-          outline: none
-        &::placeholder
-          color: ligthen(#08d19c,.5)
-          font-size: .8em
-      button
-        cursor: pointer
-        padding: 0px 8px
   .banner
     height: 500px
     background: linear-gradient(115deg , transparent 30% ,#159957 30%, #155799),url("https://picsum.photos/1200/800?random=20")  center center/ auto 100%
@@ -123,7 +120,7 @@ body,html
       width: 50%
       height: 100%
       position: relative
-      left: 35%
+      left: 40%
       display: flex
       flex-direction: column
       justify-content: center
@@ -146,10 +143,10 @@ body,html
         overflow: hidden
         border: 1px solid #fff
         box-shadow: 0 0 8px #eee
-        max-width: 750px
+        max-width: 800px
         position: relative
         top: 50px
-        left: -13%
+        left: -10%
         input,button
           border: none
           line-height: 35px
@@ -160,18 +157,19 @@ body,html
           padding: 0 10px
           &:focus
             outline: none
+          &::placeholder
+            color: rgba(225,225,225,.5) 
+            font-size: .8em
         button
           position: absolute
           right: 0
           padding: 0 20px 0 10px
           text-align: center
           cursor: pointer
-
-          
-          // background-color: #fff
   .section.travelplace
-    padding: 20px 0px 0px
-    background: linear-gradient(90deg,#c0c0aa,#1cefff)
+    padding: 20px 0px 80px
+    background: linear-gradient(45deg,#007991,#78ffd6)
+    position: relative
     .wrap
       width: 1200px
       margin: auto
@@ -209,7 +207,7 @@ body,html
       .text > *
         margin-bottom: 3px
 
-      button
+      label
         border: none
         border: 1px solid #888
         border-radius: 10px
@@ -219,10 +217,41 @@ body,html
         bottom: 10px
         right: 20px
         box-shadow: 0 0 5px #c0c0aa
+        font-size: 10px
         &:hover
           background-color: #888
           color: #fff
-    
+    .about
+      width: 700px
+      margin: auto
+      .detailbox  
+        padding: 35px 
+        width: 800px
+        background: #baffee
+        position: absolute
+        top: 12%
+        left: -50%
+        z-index: 1
+        border-radius: 10px
+        box-shadow: 0 0 8px #888
+        p
+          text-indent: 2em
+          color: #888
+          font-weight: 500
+        button
+          border: none
+          border: 1px solid #888
+          padding: 2px 7px
+          position: absolute
+          right: 10px
+          top: 10px
+          border-radius: 2px
+          color: #888
+          cursor: pointer
+          &:hover
+            color: #fff
+            background-color: rgba(0,0,0,.5)
+
     
 </style>
   
@@ -237,13 +266,20 @@ export default {
       number:123,
       lists : [2,3,5,6,7,7,3],
       apidata: [],
-      searchitem: ''
+      searchitem: '',
+
     }
   },
   async fetch () {
     await axios.get('https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvAttractions.aspx')
-      .then(response => this.apidata = response.data)
-    console.log(this.apidata)
+      .then(response => {
+        let tmp = response
+        for (let i=0; i<response.data.length; i++)
+        {
+          response.data[i]['isOpenDetail'] = false
+        }
+        this.apidata = response.data
+      })
   },
   computed:{
     evennumber: function () {
@@ -255,6 +291,11 @@ export default {
       return this.apidata.filter(
         item=> item.Address.match(this.searchitem)
       );
+    }
+  },
+  methords:{
+    closed(id){
+      this.showitem = false
     }
   }
 }
