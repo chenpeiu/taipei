@@ -19,11 +19,12 @@
       h4.secon 從我的指尖溜過
       p 這次走過的路，我會把它放進屬於我的記憶盒子<br>因此，它將成為我生命中的一部份
       .form
-        input(type="text" placeholder="想去哪個城市逍遙~~" v-model="searchitem")
+        input(type="text" placeholder="想去哪逍遙~~" v-model="searchitem")
         button(type='submit') search
   .section.travelplace
     .wrap
-      .item(v-for="i in searched.slice(0, 9)" )
+      .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
+      .item(v-if="searched.length>0" v-for="i in searched.slice(0, 9)" )
         h2 {{i.Name}}
         .pic
           img(v-bind:src="i.Photo")
@@ -32,15 +33,11 @@
           .place {{i.City}}&nbsp;/&nbsp;{{i.Town}}
           .tel TEL:&nbsp;{{i.Tel}}
           p {{i.Introduction.substring(0,100)}}
-
-        label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail") more
+        label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail" ) more
         .about
           .detailbox(v-if="i.isOpenDetail")
-            //- button(v-on:click="closed()") X
-            button(v-on:click="i.isOpenDetail=!i.isOpenDetail") X
             p {{i.Introduction}}    
-    
-
+        .overplay(v-if="i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail")
 
 
 </template>
@@ -158,7 +155,7 @@ body,html
           &:focus
             outline: none
           &::placeholder
-            color: rgba(225,225,225,.5) 
+            color: rgba(225,225,225,.8) 
             font-size: .8em
         button
           position: absolute
@@ -175,6 +172,16 @@ body,html
       margin: auto
       display: flex
       flex-wrap: wrap
+    .wrongsearch
+      margin: auto
+      color: #fff
+      text-align: center
+      font-size: 30px
+      position: absolute
+      top: 50%
+      transform: translateY(-50%)
+      right: 0
+      left: 0
     .item
       width: 380px
       margin: 0px 10px 20px
@@ -189,15 +196,20 @@ body,html
         text-align: center
         line-height: 50px
         width: 97%
-        // border-radius: 5px
-        border: dotted 5px #888
-        box-shadow: 0 0 5px #999
+        border: dotted 5px #007991
+        box-shadow: 0px 0px 5px #007991 inset
         margin-bottom: 10px
       .pic
-        width: 100%
+        width: 90%
         text-align: center
+        overflow: hidden
         img
-          width: 90%
+          width: 100%
+          vertical-align: top
+          transition: 1s
+          &:hover
+            transform: scale(1.1)
+
       .text
         padding: 0px 5%
         .arrd
@@ -209,38 +221,44 @@ body,html
 
       label
         border: none
-        border: 1px solid #888
+        border: 1px solid #007991
         border-radius: 10px
         padding: 2px 5px
         position: absolute
         cursor: pointer
         bottom: 10px
         right: 20px
-        box-shadow: 0 0 5px #c0c0aa
+        box-shadow: 0 0 5px #eee
         font-size: 10px
+        font-weight: 800
+        color: #007991
         &:hover
-          background-color: #888
+          background-color: rgba(#007991,.8)
           color: #fff
     .about
-      width: 700px
-      margin: auto
       .detailbox  
         padding: 35px 
-        width: 800px
+        width: 600px
         background: #baffee
-        position: absolute
-        top: 12%
-        left: -50%
+        position: fixed
+        top: 50%
+        left: 50%
+        transform: translate(-50%,-50%)
         z-index: 1
+        border: 2px solid rgba(#fff,.5)
         border-radius: 10px
-        box-shadow: 0 0 8px #888
+        box-shadow: 0 0 5px #fff
+        z-index: 2
         p
           text-indent: 2em
           color: #888
           font-weight: 500
+          letter-spacing: .1em
+          text-align: justify
+          line-height: 1.6em
         button
           border: none
-          border: 1px solid #888
+          border: 2px solid rgba(#007991,.5)
           padding: 2px 7px
           position: absolute
           right: 10px
@@ -250,7 +268,15 @@ body,html
           cursor: pointer
           &:hover
             color: #fff
-            background-color: rgba(0,0,0,.5)
+            background-color: #007991
+    .overplay
+      position: fixed
+      left: 0
+      top: 0
+      right: 0
+      bottom: 0
+      background-color: rgba(#00596b,.3)
+      z-index: 1
 
     
 </style>
@@ -263,10 +289,9 @@ export default {
   name: 'IndexPage',
   data(){
     return{
-      number:123,
-      lists : [2,3,5,6,7,7,3],
       apidata: [],
       searchitem: '',
+
 
     }
   },
@@ -289,14 +314,16 @@ export default {
     },
     searched: function() {
       return this.apidata.filter(
-        item=> item.Address.match(this.searchitem)
+        // item=> item.Address.match(this.searchitem)
+        item=> item.Address.match(this.searchitem) || item.Name.match(this.searchitem)
       );
-    }
+    },
   },
   methords:{
     closed(id){
       this.showitem = false
-    }
+    },
+    
   }
 }
 </script>
