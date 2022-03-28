@@ -9,25 +9,28 @@
       a(href="#") 去哪裡玩
       a(href="#") 跟隨我們
       a(href="#") 更多發現
-    .form
-      input(type="text" placeholder="type here")
-      button(type='submit') search
+    //- .form
+    //-   input(type="text" placeholder="type here")
+    //-   button(type='submit') search
   .banner
     .banner_txt
       h1 尋找旅行的意義
       h4 那次出遊&nbsp;&nbsp;&nbsp;&nbsp;風
       h4.secon 從我的指尖溜過
       p 這次走過的路，我會把它放進屬於我的記憶盒子<br>因此，它將成為我生命中的一部份
+      .form
+        input(type="text" placeholder="想去哪個城市逍遙~~" v-model="searchitem")
+        button(type='submit') search
   .section.travelplace
     .wrap
-      .item(v-for="i in apidata.slice(0, 9)")
+      .item(v-for="i in searched.slice(0, 9)" )
         h2 {{i.Name}}
         .pic
           img(v-bind:src="i.Photo")
         .text
+          .arrd {{i.Address}}
           .place {{i.City}}&nbsp;/&nbsp;{{i.Town}}
           .tel TEL:&nbsp;{{i.Tel}}
-          .arrd 地址：&nbsp;{{i.Address}}
           p {{i.Introduction.substring(0,100)}}
         button more
 </template>
@@ -108,7 +111,6 @@ body,html
         &::placeholder
           color: ligthen(#08d19c,.5)
           font-size: .8em
-
       button
         cursor: pointer
         padding: 0px 8px
@@ -126,6 +128,8 @@ body,html
       flex-direction: column
       justify-content: center
       color: #fff
+      min-width: 500px
+      // border: 1px solid
       h1
         font-size: 40px
         margin-bottom: 10px
@@ -136,6 +140,35 @@ body,html
         margin-bottom: 10px
       p
         font-size: 25px
+      .form
+        display: flex
+        border-radius: 10px
+        overflow: hidden
+        border: 1px solid #fff
+        box-shadow: 0 0 8px #eee
+        max-width: 750px
+        position: relative
+        top: 50px
+        left: -13%
+        input,button
+          border: none
+          line-height: 35px
+          background-color: transparent
+          color: #fff
+        input
+          width: 80%
+          padding: 0 10px
+          &:focus
+            outline: none
+        button
+          position: absolute
+          right: 0
+          padding: 0 20px 0 10px
+          text-align: center
+          cursor: pointer
+
+          
+          // background-color: #fff
   .section.travelplace
     padding: 20px 0px 0px
     background: linear-gradient(90deg,#c0c0aa,#1cefff)
@@ -144,11 +177,10 @@ body,html
       margin: auto
       display: flex
       flex-wrap: wrap
-      
     .item
       width: 380px
       margin: 0px 10px 20px
-      padding: 5px 0 20px
+      padding: 5px 0 35px
       background-color: #eee
       display: flex
       flex-direction: column
@@ -169,7 +201,9 @@ body,html
         img
           width: 90%
       .text
-        padding: 8px 5%
+        padding: 0px 5%
+        .arrd
+          font-size: 12px
         p::after
           content:"  …"
       .text > *
@@ -188,15 +222,6 @@ body,html
         &:hover
           background-color: #888
           color: #fff
-
-
-
-      
-
-        
-
-      
-      
     
     
 </style>
@@ -212,6 +237,7 @@ export default {
       number:123,
       lists : [2,3,5,6,7,7,3],
       apidata: [],
+      searchitem: ''
     }
   },
   async fetch () {
@@ -223,6 +249,11 @@ export default {
     evennumber: function () {
       return this.lists.filter(
         num => num%2==0
+      );
+    },
+    searched: function() {
+      return this.apidata.filter(
+        item=> item.Address.match(this.searchitem)
       );
     }
   }
