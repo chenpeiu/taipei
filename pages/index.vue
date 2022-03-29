@@ -20,22 +20,30 @@
       p 這次走過的路，我會把它放進屬於我的記憶盒子<br>因此，它將成為我生命中的一部份
       .form
         input(type="text" placeholder="想去哪逍遙~~" v-model="searchitem")
-        button(type='submit') search
+        button(type='submit')
+          fa.fa(:icon="['fas' , 'magnifying-glass']")
   .section.travelplace
     .wrap
       .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
-      .item(v-if="searched.length>0" v-for="i in searched.slice(0, 9)" )
-        h2 {{i.Name}}
+      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice(0, 9)" )
         .pic
           img(v-bind:src="i.Photo")
+          h2 {{i.Name}}
+          .tag(v-show="index<3")
+            span 最熱門
         .text
-          .arrd {{i.Address}}
+          .arrd
+            fa.fa(:icon="['fas' , 'location-dot']")
+            span {{i.Address}}
+          .tel
+            fa.fa(:icon="['fas' , 'phone']")
+            span {{i.Tel}}
           .place {{i.City}}&nbsp;/&nbsp;{{i.Town}}
-          .tel TEL:&nbsp;{{i.Tel}}
           p {{i.Introduction.substring(0,100)}}
         label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail" ) more
         .about
           .detailbox(v-if="i.isOpenDetail")
+            h2 {{i.Name}}
             p {{i.Introduction}}    
         .overplay(v-if="i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail")
 
@@ -49,6 +57,8 @@
   box-sizing: border-box
   padding: 0
   margin: 0
+  font-family: 微軟正黑體
+
   // border: solid 1px 
 body,html
   padding: 0
@@ -185,40 +195,64 @@ body,html
     .item
       width: 380px
       margin: 0px 10px 20px
-      padding: 5px 0 35px
+      padding: 0px 0 35px
       background-color: #eee
       display: flex
       flex-direction: column
       align-items: center
       position: relative
       border-radius: 5px
-      h2
-        text-align: center
-        line-height: 50px
-        width: 97%
-        border: dotted 5px #007991
-        box-shadow: 0px 0px 5px #007991 inset
-        margin-bottom: 10px
+      overflow: hidden
       .pic
-        width: 90%
+        width: 100%
         text-align: center
-        overflow: hidden
+        position: relative
+        h2
+          color: #fff
+          position: absolute
+          left: 10px
+          bottom: 6px
+          font-weight: 600
+          font-size: 1.3em
+          text-shadow: 0 0 0.2em #888, 0 0 0.2em #888, 0 0 0.2em #888
+        .tag
+          background-color: #ff8000
+          color: #eee
+          font-weight: 600
+          font-size: 20px
+          width: 50%
+          text-align: center
+          line-height: 1.6em
+          transform: rotate(45deg)
+          position: absolute
+          right: -65px
+          top: 18px
         img
           width: 100%
           vertical-align: top
-          transition: 1s
+          transition: .8s
+
           &:hover
             transform: scale(1.1)
 
       .text
-        padding: 0px 5%
+        padding: 8px 5% 0px
         .arrd
           font-size: 12px
+          margin-top: 8px
+          .fa
+            color: #f22727
+            margin-right: 7px
         p::after
           content:"  …"
+        .tel
+          font-size: 12px
+          .fa
+            color: green
+            margin-right: 5px
       .text > *
-        margin-bottom: 3px
-
+        margin-bottom: 5px
+        line-height: 1.1em
       label
         border: none
         border: 1px solid #007991
@@ -237,8 +271,8 @@ body,html
           color: #fff
     .about
       .detailbox  
-        padding: 35px 
-        width: 600px
+        padding: 5px 35px 15px
+        width: 700px
         background: #baffee
         position: fixed
         top: 50%
@@ -249,10 +283,13 @@ body,html
         border-radius: 10px
         box-shadow: 0 0 5px #fff
         z-index: 2
+        h2
+          line-height: 1.6em
+          color: darken(#007991,.8)
         p
           text-indent: 2em
-          color: #888
-          font-weight: 500
+          color: darken(#888,.3)
+          font-weight: bold
           letter-spacing: .1em
           text-align: justify
           line-height: 1.6em
