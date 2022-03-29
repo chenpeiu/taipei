@@ -25,7 +25,7 @@
   .section.travelplace
     .wrap
       .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
-      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice(0, 9)" )
+      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice((currentpage*9),((currentpage+1)*9))" )
         .pic
           img(v-bind:src="i.Photo")
           h2 {{i.Name}}
@@ -46,7 +46,9 @@
             h2 {{i.Name}}
             p {{i.Introduction}}    
         .overplay(v-if="i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail")
-
+  .pages
+    ul
+      li(v-for=" i in totalpages" v-on:click="currentpage = i" ) {{i}}
 
 </template>
 
@@ -58,7 +60,6 @@
   padding: 0
   margin: 0
   font-family: 微軟正黑體
-
   // border: solid 1px 
 body,html
   padding: 0
@@ -207,6 +208,7 @@ body,html
         width: 100%
         text-align: center
         position: relative
+        overflow: hidden
         h2
           color: #fff
           position: absolute
@@ -234,12 +236,11 @@ body,html
 
           &:hover
             transform: scale(1.1)
-
       .text
         padding: 8px 5% 0px
         .arrd
           font-size: 12px
-          margin-top: 8px
+          margin-top: 0px
           .fa
             color: #f22727
             margin-right: 7px
@@ -328,6 +329,7 @@ export default {
     return{
       apidata: [],
       searchitem: '',
+      currentpage: 1,
 
 
     }
@@ -354,6 +356,14 @@ export default {
         // item=> item.Address.match(this.searchitem)
         item=> item.Address.match(this.searchitem) || item.Name.match(this.searchitem)
       );
+    },
+    totalpages: function() {
+      let x = Math.floor(this.searched.length/9)
+      if (this.searched.length % 9 >0) {
+        x = x + 1
+      }
+      console.log(x)
+      return x
     },
   },
   methords:{
