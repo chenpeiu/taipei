@@ -25,7 +25,7 @@
   .section.travelplace
     .wrap
       .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
-      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice((currentpage*9),((currentpage+1)*9))" )
+      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice(((currentpage-1)*9),((currentpage)*9))" )
         .pic
           img(v-bind:src="i.Photo")
           h2 {{i.Name}}
@@ -39,16 +39,24 @@
             fa.fa(:icon="['fas' , 'phone']")
             span {{i.Tel}}
           .place {{i.City}}&nbsp;/&nbsp;{{i.Town}}
-          p {{i.Introduction.substring(0,100)}}
-        label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail" ) more
+          p {{i.Introduction.substring(0,90)}}
+        label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail" ) more {{i.ID}}
         .about
           .detailbox(v-if="i.isOpenDetail")
             h2 {{i.Name}}
             p {{i.Introduction}}    
         .overplay(v-if="i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail")
-  .pages
-    ul
-      li(v-for=" i in totalpages" v-on:click="currentpage = i" ) {{i}}
+    .pages
+      ul
+        li(@click="currentpage=1") {{currentpage}}
+          fa.fa(:icon="['fas' , 'angles-left']" ) 
+        li(@click="changepage(-1)")
+          fa.fa(:icon="['fas' , 'angle-left']")
+        li(v-for=" i in totalpages" v-on:click="currentpage = i" :class="{current : currentpage == i}") {{i}}
+        li(@click="changepage(1)")
+          fa.fa(:icon="['fas' , 'angle-right']")
+        li(@click="currentpage=totalpages")
+          fa.fa(:icon="['fas' , 'angles-right']")
 
 </template>
 
@@ -196,7 +204,6 @@ body,html
     .item
       width: 380px
       margin: 0px 10px 20px
-      padding: 0px 0 35px
       background-color: #eee
       display: flex
       flex-direction: column
@@ -204,16 +211,20 @@ body,html
       position: relative
       border-radius: 5px
       overflow: hidden
+      // display: none
       .pic
         width: 100%
-        text-align: center
+        // height: 220px
+        height: 40%
+        flex-grow: 0
         position: relative
         overflow: hidden
+        // border-bottom: 1px solid red
         h2
           color: #fff
           position: absolute
           left: 10px
-          bottom: 6px
+          bottom: 10px
           font-weight: 600
           font-size: 1.3em
           text-shadow: 0 0 0.2em #888, 0 0 0.2em #888, 0 0 0.2em #888
@@ -233,11 +244,12 @@ body,html
           width: 100%
           vertical-align: top
           transition: .8s
-
           &:hover
             transform: scale(1.1)
       .text
         padding: 8px 5% 0px
+        height: 50%
+        // border: solid 1px
         .arrd
           font-size: 12px
           margin-top: 0px
@@ -251,6 +263,8 @@ body,html
           .fa
             color: green
             margin-right: 5px
+          span
+            font-family: 'Lobster', cursive
       .text > *
         margin-bottom: 5px
         line-height: 1.1em
@@ -315,6 +329,20 @@ body,html
       bottom: 0
       background-color: rgba(#00596b,.3)
       z-index: 1
+    .pages
+      display: flex
+      justify-content: center
+      ul
+        display: flex
+        li
+          padding: 3px  8px
+          cursor: pointer
+          font-family: 'Lobster', cursive
+          width: 50px
+          text-align: center
+        .current
+          color: #fff
+
 
     
 </style>
@@ -366,11 +394,12 @@ export default {
       return x
     },
   },
-  methords:{
-    closed(id){
-      this.showitem = false
+  methods:{
+    changepage(num){
+      if (1<this.currentpage<this.totalpages){
+        this.currentpage += num
+      }
     },
-    
   }
 }
 </script>
