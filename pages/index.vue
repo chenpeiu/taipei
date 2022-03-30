@@ -3,12 +3,22 @@
   .header
     a.logo(href="#")
       img(src="https://i.pinimg.com/originals/1b/8e/62/1b8e628911c42bb354ff8c60e2cd2f97.jpg", alt="")
+    
+
     nav
-      a(href="#") 首頁
-      a(href="#") 旅遊網站
-      a(href="#") 去哪裡玩
-      a(href="#") 跟隨我們
-      a(href="#") 更多發現
+        a(href="#") 首頁
+        a(href="#") 旅遊網站
+        a(href="#") 去哪裡玩
+        a(href="#") 跟隨我們
+        a(href="#") 更多發現
+
+    .cross
+      .line.line1
+      .line.line2
+      .line.line3
+    
+    
+      
     //- .form
     //-   input(type="text" placeholder="type here")
     //-   button(type='submit') search
@@ -19,7 +29,7 @@
       h4.secon 從我的指尖溜過
       p 這次走過的路，我會把它放進屬於我的記憶盒子<br>因此，它將成為我生命中的一部份
       .form
-        input(type="text" placeholder="想去哪逍遙~~" v-model="searchitem")
+        input(type="text" placeholder="想去哪逍遙~~" v-model.lazy="searchitem" v-on:keyup.enter="currentpage=1")
         button(type='submit')
           fa.fa(:icon="['fas' , 'magnifying-glass']")
   .section.travelplace
@@ -40,20 +50,20 @@
             span {{i.Tel}}
           .place {{i.City}}&nbsp;/&nbsp;{{i.Town}}
           p {{i.Introduction.substring(0,90)}}
-        label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail" ) more {{i.ID}}
+        label(v-if="!i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail" ) more
         .about
           .detailbox(v-if="i.isOpenDetail")
             h2 {{i.Name}}
             p {{i.Introduction}}    
         .overplay(v-if="i.isOpenDetail" v-on:click="i.isOpenDetail=!i.isOpenDetail")
     .pages
-      ul
-        li(@click="currentpage=1") {{currentpage}}
+      ul(v-if="searched.length!=0 ")
+        li(@click="currentpage=1")
           fa.fa(:icon="['fas' , 'angles-left']" ) 
-        li(@click="changepage(-1)")
+        li(@click="cutpage()")
           fa.fa(:icon="['fas' , 'angle-left']")
         li(v-for=" i in totalpages" v-on:click="currentpage = i" :class="{current : currentpage == i}") {{i}}
-        li(@click="changepage(1)")
+        li(@click="addpage()")
           fa.fa(:icon="['fas' , 'angle-right']")
         li(@click="currentpage=totalpages")
           fa.fa(:icon="['fas' , 'angles-right']")
@@ -80,6 +90,8 @@ body,html
     align-items: center
     background-color: #fff
     padding: 0px 10px
+    width: 100%
+    border: 1px solid
     .logo
       width: 130px
       height: 100px
@@ -114,19 +126,43 @@ body,html
           bottom: 0px
           background-color: #057859
           transition: 0.5s
-    .form
-      border-radius: 20px
-      display: flex
-      align-items: center
-      border: solid 3px #08d19c
-      box-shadow: 0 0 5px #08d19c
-      overflow: hidden
-      input,button
-        background-color: transparent
-        border: none 
-        color: #08d19c
-        font-weight: 600px
-        font-size: 1em
+    .cross
+      width: 50px
+      height: 50px
+      border-radius: 10px
+      border: 5px solid 
+      position: relative
+      cursor: pointer
+      &:hover
+        .line
+          width: 75%
+        .line1
+          transform: translate(-50%,-50%) rotate(45deg)
+        .line2
+          opacity: 0
+        .line3
+          transform: translate(-50%,-50%) rotate(-45deg)
+
+      .line
+        width: 65%
+        height: 5px
+        background-color: #000
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%,-50%)
+        transition: transform .5s
+      .line1
+        transform: translate(-50%,-250%)
+      .line3
+        transform: translate(-50%, 150%)
+        
+
+        
+
+
+
+        
   .banner
     height: 500px
     background: linear-gradient(115deg , transparent 30% ,#159957 30%, #155799),url("https://picsum.photos/1200/800?random=20")  center center/ auto 100%
@@ -203,23 +239,22 @@ body,html
       left: 0
     .item
       width: 380px
+      height: 470px
       margin: 0px 10px 20px
       background-color: #eee
       display: flex
       flex-direction: column
-      align-items: center
+      // align-items: center
       position: relative
       border-radius: 5px
       overflow: hidden
       // display: none
       .pic
         width: 100%
-        // height: 220px
-        height: 40%
+        height: 50%
         flex-grow: 0
         position: relative
         overflow: hidden
-        // border-bottom: 1px solid red
         h2
           color: #fff
           position: absolute
@@ -241,17 +276,16 @@ body,html
           right: -65px
           top: 18px
         img
-          width: 100%
-          vertical-align: top
+          width: 120%
+          vertical-align: bottom
           transition: .8s
           &:hover
             transform: scale(1.1)
       .text
         padding: 8px 5% 0px
-        height: 50%
-        // border: solid 1px
+        text-align: left
         .arrd
-          font-size: 12px
+          font-size: 15px
           margin-top: 0px
           .fa
             color: #f22727
@@ -259,7 +293,7 @@ body,html
         p::after
           content:"  …"
         .tel
-          font-size: 12px
+          font-size: 15px
           .fa
             color: green
             margin-right: 5px
@@ -334,14 +368,22 @@ body,html
       justify-content: center
       ul
         display: flex
+        user-select: none
+        margin-top: 20px
         li
-          padding: 3px  8px
+          padding: 5px  8px
           cursor: pointer
           font-family: 'Lobster', cursive
           width: 50px
           text-align: center
+          transform: translateY(0px)
+          transition: transform .5s
+
         .current
           color: #fff
+          transform: translateY(-8px)
+          border-bottom: 3px solid #fff
+
 
 
     
@@ -374,11 +416,6 @@ export default {
       })
   },
   computed:{
-    evennumber: function () {
-      return this.lists.filter(
-        num => num%2==0
-      );
-    },
     searched: function() {
       return this.apidata.filter(
         // item=> item.Address.match(this.searchitem)
@@ -395,9 +432,14 @@ export default {
     },
   },
   methods:{
-    changepage(num){
-      if (1<this.currentpage<this.totalpages){
-        this.currentpage += num
+    addpage(){
+      if (this.currentpage<this.totalpages){
+        this.currentpage +=1
+      }
+    },
+    cutpage(){
+      if (1<this.currentpage){
+        this.currentpage -=1
       }
     },
   }
