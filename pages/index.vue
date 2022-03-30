@@ -3,19 +3,22 @@
   .header
     a.logo(href="#")
       img(src="https://i.pinimg.com/originals/1b/8e/62/1b8e628911c42bb354ff8c60e2cd2f97.jpg", alt="")
-    
 
-    nav
+    nav(:class="{'fixednav' : navappear}")
         a(href="#") 首頁
         a(href="#") 旅遊網站
         a(href="#") 去哪裡玩
         a(href="#") 跟隨我們
         a(href="#") 更多發現
 
-    .cross
-      .line.line1
-      .line.line2
-      .line.line3
+    .cross(@click="navappear=!navappear" :class="{'grabed' : navappear}")
+      .line.line1(:class="{'grabed' : navappear}")
+      .line.line2(:class="{'grabed' : navappear}")
+      .line.line3(:class="{'grabed' : navappear}")
+
+    
+
+
     
     
       
@@ -103,17 +106,19 @@ body,html
         margin-top: -25px
     nav
       margin: auto
+      opacity: 0
+      transition: .3s
       a
         text-decoration: none
         color: #08d19c
-        padding: 0px 20px 5px
+        padding: 5px 20px
         position: relative
-        top: 0
         transition: 0.5s
         font-size: 20px
         font-weight: 900
+        top: 0px
         &:hover 
-          top: -3px
+          top: -5px
           &:after
             left: 0%
             right: 0%
@@ -126,22 +131,15 @@ body,html
           bottom: 0px
           background-color: #057859
           transition: 0.5s
+    .fixednav
+      opacity: 1
     .cross
       width: 50px
       height: 50px
       border-radius: 10px
       border: 5px solid #155799
       position: relative
-      cursor: pointer
-      &:hover
-        .line
-          width: 75%
-        .line1
-          transform: translate(-50%,-50%) rotate(45deg)
-        .line2
-          opacity: 0
-        .line3
-          transform: translate(-50%,-50%) rotate(-45deg)
+      cursor: grab
       .line
         width: 65%
         height: 5px
@@ -155,6 +153,17 @@ body,html
         transform: translate(-50%,-250%)
       .line3
         transform: translate(-50%, 150%)
+      .line.grabed
+        width: 75%
+        background-color: #fff
+      .line1.grabed
+        transform: translate(-50%,-50%) rotate(45deg)
+      .line2.grabed
+        opacity: 0
+      .line3.grabed
+        transform: translate(-50%,-50%) rotate(-45deg)
+    .grabed
+      background-color: #155799
         
   .banner
     height: 500px
@@ -363,7 +372,7 @@ body,html
         user-select: none
         margin-top: 20px
         li
-          padding: 2px  5px
+          padding: 2px
           cursor: pointer
           font-family: 'Lobster', cursive
           width: 50px
@@ -391,7 +400,7 @@ export default {
       apidata: [],
       searchitem: '',
       currentpage: 1,
-
+      navappear: false
 
     }
   },
