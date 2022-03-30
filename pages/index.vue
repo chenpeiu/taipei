@@ -35,7 +35,7 @@
   .section.travelplace
     .wrap
       .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
-      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice(((currentpage-1)*9),((currentpage)*9))" )
+      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice((currentpage*9),((currentpage+1)*9))" )
         .pic
           img(v-bind:src="i.Photo")
           h2 {{i.Name}}
@@ -241,6 +241,7 @@ body,html
       width: 380px
       height: 470px
       margin: 0px 10px 20px
+      padding: 0px 0 35px
       background-color: #eee
       display: flex
       flex-direction: column
@@ -248,7 +249,6 @@ body,html
       position: relative
       border-radius: 5px
       overflow: hidden
-      // display: none
       .pic
         width: 100%
         height: 50%
@@ -259,7 +259,7 @@ body,html
           color: #fff
           position: absolute
           left: 10px
-          bottom: 10px
+          bottom: 6px
           font-weight: 600
           font-size: 1.3em
           text-shadow: 0 0 0.2em #888, 0 0 0.2em #888, 0 0 0.2em #888
@@ -279,6 +279,7 @@ body,html
           width: 120%
           vertical-align: bottom
           transition: .8s
+
           &:hover
             transform: scale(1.1)
       .text
@@ -297,8 +298,6 @@ body,html
           .fa
             color: green
             margin-right: 5px
-          span
-            font-family: 'Lobster', cursive
       .text > *
         margin-bottom: 5px
         line-height: 1.1em
@@ -378,7 +377,6 @@ body,html
           text-align: center
           transform: translateY(0px)
           transition: transform .5s
-
         .current
           color: #fff
           transform: translateY(-8px)
@@ -442,6 +440,7 @@ export default {
         this.currentpage -=1
       }
     },
+    
   }
 }
 </script>
