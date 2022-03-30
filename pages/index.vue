@@ -29,13 +29,13 @@
       h4.secon 從我的指尖溜過
       p 這次走過的路，我會把它放進屬於我的記憶盒子<br>因此，它將成為我生命中的一部份
       .form
-        input(type="text" placeholder="想去哪逍遙~~" v-model.lazy="searchitem" v-on:keyup.enter="currentpage=1")
+        input(type="text" placeholder="想去哪逍遙~~" v-model="searchitem" )
         button(type='submit')
           fa.fa(:icon="['fas' , 'magnifying-glass']")
   .section.travelplace
     .wrap
       .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
-      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice((currentpage*9),((currentpage+1)*9))" )
+      .item(v-if="searched.length>0" v-for="(i,index) in searched.slice(((currentpage-1)*9),(currentpage*9))" )
         .pic
           img(v-bind:src="i.Photo")
           h2 {{i.Name}}
@@ -130,7 +130,7 @@ body,html
       width: 50px
       height: 50px
       border-radius: 10px
-      border: 5px solid 
+      border: 5px solid #155799
       position: relative
       cursor: pointer
       &:hover
@@ -142,11 +142,10 @@ body,html
           opacity: 0
         .line3
           transform: translate(-50%,-50%) rotate(-45deg)
-
       .line
         width: 65%
         height: 5px
-        background-color: #000
+        background-color: #155799
         position: absolute
         top: 50%
         left: 50%
@@ -156,12 +155,6 @@ body,html
         transform: translate(-50%,-250%)
       .line3
         transform: translate(-50%, 150%)
-        
-
-        
-
-
-
         
   .banner
     height: 500px
@@ -299,8 +292,8 @@ body,html
             color: green
             margin-right: 5px
       .text > *
-        margin-bottom: 5px
-        line-height: 1.1em
+        margin-bottom: 8px
+        line-height: 1.2em
       label
         border: none
         border: 1px solid #007991
@@ -370,7 +363,7 @@ body,html
         user-select: none
         margin-top: 20px
         li
-          padding: 5px  8px
+          padding: 2px  5px
           cursor: pointer
           font-family: 'Lobster', cursive
           width: 50px
@@ -416,7 +409,6 @@ export default {
   computed:{
     searched: function() {
       return this.apidata.filter(
-        // item=> item.Address.match(this.searchitem)
         item=> item.Address.match(this.searchitem) || item.Name.match(this.searchitem)
       );
     },
@@ -425,6 +417,7 @@ export default {
       if (this.searched.length % 9 >0) {
         x = x + 1
       }
+      this.currentpage=1
       console.log(x)
       return x
     },
