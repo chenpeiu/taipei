@@ -56,7 +56,9 @@
           fa.fa(:icon="['fas' , 'angles-left']" ) 
         li(@click="cutpage()")
           fa.fa(:icon="['fas' , 'angle-left']")
-        li(v-for=" i in totalpages" v-on:click="currentpage = i" :class="{current : currentpage == i}") {{i}}
+        li(v-for=" i in (currentpage+5)" v-on:click="currentpage = i" :class="{current : currentpage == i}") {{i}}
+        li(v-if="totalpages>5 & currentpage!=totalpages")
+          fa.fa(:icon="['fas' , 'ellipsis']")
         li(@click="addpage()")
           fa.fa(:icon="['fas' , 'angle-right']")
         li(@click="currentpage=totalpages")
