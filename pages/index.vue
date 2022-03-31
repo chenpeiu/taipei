@@ -15,16 +15,6 @@
       .line.line1(:class="{'grabed' : navappear}")
       .line.line2(:class="{'grabed' : navappear}")
       .line.line3(:class="{'grabed' : navappear}")
-
-    
-
-
-    
-    
-      
-    //- .form
-    //-   input(type="text" placeholder="type here")
-    //-   button(type='submit') search
   .banner
     .banner_txt
       h1 尋找旅行的意義
@@ -35,6 +25,7 @@
         input(type="text" placeholder="想去哪逍遙~~" v-model="searchitem" )
         button(type='submit')
           fa.fa(:icon="['fas' , 'magnifying-glass']")
+   
   .section.travelplace
     .wrap
       .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
@@ -70,6 +61,7 @@
           fa.fa(:icon="['fas' , 'angle-right']")
         li(@click="currentpage=totalpages")
           fa.fa(:icon="['fas' , 'angles-right']")
+  .clearnav(v-if="navappear" @click="navappear=false")
 
 </template>
 
@@ -80,7 +72,6 @@
   box-sizing: border-box
   padding: 0
   margin: 0
-  font-family: 微軟正黑體
   // border: solid 1px 
 body,html
   padding: 0
@@ -164,7 +155,13 @@ body,html
         transform: translate(-50%,-50%) rotate(-45deg)
     .grabed
       background-color: #155799
-        
+  .clearnav
+    position: absolute  
+    top: 100px
+    left: 0
+    right: 0
+    bottom: 0
+    background-color: transparent
   .banner
     height: 500px
     background: linear-gradient(115deg , transparent 30% ,#159957 30%, #155799),url("https://picsum.photos/1200/800?random=20")  center center/ auto 100%
@@ -297,6 +294,7 @@ body,html
           content:"  …"
         .tel
           font-size: 15px
+          font-family: 'Lobster', cursive
           .fa
             color: green
             margin-right: 5px
@@ -374,7 +372,7 @@ body,html
         li
           padding: 2px
           cursor: pointer
-          font-family: 'Lobster', cursive
+          font-family: 'Pacifico', cursive
           width: 50px
           text-align: center
           transform: translateY(0px)
