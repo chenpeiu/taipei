@@ -408,18 +408,23 @@ body,html
           color: #fff
           transform: translateY(-8px)
           border-bottom: 3px solid #fff
-
-
-
-    
 </style>
-  
-
 
 <script>
 import axios from 'axios'
 export default {
-  name: 'IndexPage',
+  async fetch(){
+    // let vuethis = this
+    await axios.get("https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvAttractions.aspx")
+                .then(
+                  response => {
+                    for( let i=0; i<response.data.length ; i++){
+                      response.data[i].isOpenDetail = false
+                    }
+                    this.apidata = response.data
+                  }
+                )
+  },
   data(){
     return{
       apidata: [],
@@ -428,16 +433,6 @@ export default {
       navappear: false
 
     }
-  },
-  async fetch () {
-    await axios.get('https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvAttractions.aspx')
-      .then(response => {
-        for (let i=0; i<response.data.length; i++)
-        {
-          response.data[i]['isOpenDetail'] = false
-        }
-        this.apidata = response.data
-      })
   },
   computed:{
     searched: function() {
