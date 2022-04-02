@@ -28,7 +28,10 @@
    
   .section.travelplace
     .wrap
-      .wrongsearch(v-if="searched.length==0") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
+      .waitdata(v-if="apidata.length==0 ")
+        fa.fa_spin(:icon="['fas' , 'spinner']" ) 
+        span 載入中...
+      .wrongsearch(v-if="searched.length==0 & searchitem!='' ") 嗚嗚...沒有搜尋到 "{{searchitem}}"，再搜尋一次吧!
       .item(v-if="searched.length>0" v-for="(i,index) in searched.slice(((currentpage-1)*9),(currentpage*9))" )
         .pic
           img(v-bind:src="i.Photo")
@@ -56,13 +59,16 @@
           fa.fa(:icon="['fas' , 'angles-left']" ) 
         li(@click="cutpage()")
           fa.fa(:icon="['fas' , 'angle-left']")
-        li(v-for=" i in (currentpage+5)" v-on:click="currentpage = i" :class="{current : currentpage == i}") {{i}}
-        li(v-if="totalpages>5 & currentpage!=totalpages")
+        li(v-if="(currentpage-2)>1 & totalpages>6 ")
+          fa.fa(:icon="['fas' , 'ellipsis']")
+        li(v-for=" i in showpage" v-on:click="currentpage = i" :class="{active : currentpage == i}") {{i}}
+        li(v-if="(currentpage+3)<totalpages & totalpages>6")
           fa.fa(:icon="['fas' , 'ellipsis']")
         li(@click="addpage()")
           fa.fa(:icon="['fas' , 'angle-right']")
         li(@click="currentpage=totalpages")
           fa.fa(:icon="['fas' , 'angles-right']")
+
   .clearnav(v-if="navappear" @click="navappear=false")
 
 </template>
@@ -228,6 +234,25 @@ body,html
       margin: auto
       display: flex
       flex-wrap: wrap
+    .waitdata
+      color: #fff
+      position: absolute
+      top: 50%
+      left: 50%
+      transform: translate(-50%,-50%)
+      .fa_spin
+        animation: spin 2s linear infinite
+        margin-right: 10px
+        font-size: 30px
+        vertical-align: middle
+      span
+        font-size: 20px
+        vertical-align: middle
+    @keyframes spin 
+      0%
+        transform: rotate(0deg)
+      100%
+        transform: rotate(360deg)
     .wrongsearch
       margin: auto
       color: #fff
@@ -379,7 +404,7 @@ body,html
           text-align: center
           transform: translateY(0px)
           transition: transform .5s
-        .current
+        .active
           color: #fff
           transform: translateY(-8px)
           border-bottom: 3px solid #fff
@@ -407,7 +432,6 @@ export default {
   async fetch () {
     await axios.get('https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvAttractions.aspx')
       .then(response => {
-        let tmp = response
         for (let i=0; i<response.data.length; i++)
         {
           response.data[i]['isOpenDetail'] = false
@@ -430,7 +454,34 @@ export default {
       console.log(x)
       return x
     },
+    showpage: function() {
+      const showarray=[]
+      if (this.currentpage-2 > 1 & this.currentpage+3 < this.totalpages){
+        for (let i =this.currentpage-2 ; i < this.currentpage+3; i++){
+          showarray.push(i)
+        }
+      }
+      else if(this.currentpage-5 <= 1){
+        if (this.totalpages>6){
+          for (let i =1 ; i < 7; i++){
+            showarray.push(i)
+          }
+        }
+        else {
+          for (let i =1 ; i < this.totalpages+1; i++){
+            showarray.push(i)
+          }
+        }
+      }
+      else if(this.currentpage+5 >= this.totalpages){
+        for (let i = this.totalpages-5 ; i < this.totalpages+1 ; i++){
+          showarray.push(i)
+        }
+      }
+      return showarray
+    }
   },
+  
   methods:{
     addpage(){
       if (this.currentpage<this.totalpages){
