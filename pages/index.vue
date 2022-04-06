@@ -62,7 +62,7 @@
         li(v-if="(currentpage-2)>1 & totalpages>6 ")
           fa.fa(:icon="['fas' , 'ellipsis']")
         li(v-for=" i in showpage" v-on:click="currentpage = i" :class="{active : currentpage == i}") {{i}}
-        li(v-if="(currentpage+3)<totalpages & totalpages>6")
+        li(v-if="(currentpage+2)<totalpages & totalpages>6")
           fa.fa(:icon="['fas' , 'ellipsis']")
         li(@click="addpage()")
           fa.fa(:icon="['fas' , 'angle-right']")
@@ -451,12 +451,12 @@ export default {
     },
     showpage: function() {
       const showarray=[]
-      if (this.currentpage-2 > 1 & this.currentpage+3 < this.totalpages){
+      if (this.currentpage-2 > 1 & this.currentpage+2 < this.totalpages){
         for (let i =this.currentpage-2 ; i < this.currentpage+3; i++){
           showarray.push(i)
         }
       }
-      else if(this.currentpage-5 <= 1){
+      else if(this.currentpage-2 <= 1){
         if (this.totalpages>6){
           for (let i =1 ; i < 7; i++){
             showarray.push(i)
@@ -468,7 +468,7 @@ export default {
           }
         }
       }
-      else if(this.currentpage+5 >= this.totalpages){
+      else if(this.currentpage+2 >= this.totalpages){
         for (let i = this.totalpages-5 ; i < this.totalpages+1 ; i++){
           showarray.push(i)
         }
